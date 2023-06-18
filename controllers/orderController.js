@@ -2,11 +2,33 @@ const Order = require("../models/Order");
 const asyncWrapper = require("../middleware/async");
 const { createCustomError } = require("../Error/customError");
 
+const sortOrders = async (req) => {
+  let query = Order.find().populate("products").populate("customers");
+
+  // Check if 'date' was a field for filtering
+  if (req.query.date) {
+    const date = new Date(req.query.date);
+    query = query.find({
+      date: { $gte: date, $lt: new Date(date).setDate(date.getDate() + 1) },
+    });
+  }
+
+  // Check if 'products' was a field for filtering
+  if (req.query.products) {
+    const productIds = req.query.products.split(",");
+    query = query.find({ products: { $in: productIds } });
+  }
+
+  // Executing query
+  const orders = await query;
+
+  return orders;
+};
+
 const getAllOrders = asyncWrapper(async (req, res) => {
-  const orders = await Order.find(req.body)
-    .populate("products")
-    .populate("customers");
-  res.status(201).json({ orders });
+  const orders = await sortOrders(req);
+
+  res.status(200).json({ orders });
 });
 
 const createOrder = asyncWrapper(async (req, res) => {
