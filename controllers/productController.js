@@ -36,7 +36,7 @@ const updateProduct = asyncWrapper(async (req, res, next) => {
 
 const deleteProduct = asyncWrapper(async (req, res, body) => {
   const { id: productID } = req.params;
-  const product = await Product.findByIdAndDelete({ _id: productId });
+  const product = await Product.findByIdAndDelete({ _id: productID });
 
   if (!product) {
     return next(createCustomError(`No task with id: ${productID}`, 404));

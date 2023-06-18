@@ -5,6 +5,7 @@ require("dotenv").config();
 const connectDb = require("./db/connect");
 const products = require("./routes/productRoutes");
 const customers = require("./routes/customerRoutes");
+const orders = require("./routes/orderRoutes");
 const notFound = require("./middleware/notFound");
 const errorHandlerMiddleware = require("./middleware/errorhandler");
 
@@ -14,6 +15,7 @@ app.use(express.json());
 //routes
 app.use("/api/v1/products", products);
 app.use("/api/v1/customers", customers);
+app.use("/api/v1/orders", orders);
 
 app.use(notFound);
 app.use(errorHandlerMiddleware);
